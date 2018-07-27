@@ -24,32 +24,34 @@ type KV struct {
 	Key   string
 	Value string
 }
-type MemberAccount struct {
+type GroupMember struct {
 	MemberAccount string `json:"Member_Account"` // 成员（必填）
 	Role          string // 赋予该成员的身份，目前备选项只有Admin（选填）
 }
 type GroupMemberAccount struct {
-	MemberAccount
+	GroupMember
 	AppMemberDefinedData []KV //群成员维度自定义字段（选填）
 }
-type GroupDefine struct {
-	OwnerAccount    string          `json:"Owner_Account"` // 群主的UserId（选填）
-	Type            GroupType       // 群组类型：Private/Public/ChatRoom(不支持AVChatRoom和BChatRoom)（必填）
-	GroupId         string          //用户自定义群组ID（选填）
-	Name            string          // 群名称（必填）
-	Introduction    string          // 群简介（选填）
-	Notification    string          // 群公告（选填）
-	FaceURL         string          `json:"FaceUrl"` // 群头像URL（选填）
-	MaxMemberCount  int             // 最大群成员数量（选填）
-	ApplyJoinOption ApplyJoinOption // 申请加群处理方式（选填）
-	AppDefinedData  []KV            // 群组维度的自定义字段（选填）
 
-	MemberList []GroupMemberAccount // 初始群成员列表，最多500个（选填）
+// GroupDefine 群信息
+type GroupDefine struct {
+	OwnerAccount    string               `json:"Owner_Account"` // 群主的UserId（选填）
+	Type            GroupType            // 群组类型：Private/Public/ChatRoom(不支持AVChatRoom和BChatRoom)（必填）
+	GroupID         string               `json:"GroupId"` //用户自定义群组ID（选填）
+	Name            string               // 群名称（必填）
+	Introduction    string               // 群简介（选填）
+	Notification    string               // 群公告（选填）
+	FaceURL         string               `json:"FaceUrl"` // 群头像URL（选填）
+	MaxMemberCount  int                  // 最大群成员数量（选填）
+	ApplyJoinOption ApplyJoinOption      // 申请加群处理方式（选填）
+	AppDefinedData  []KV                 // 群组维度的自定义字段（选填）
+	CreateTime      int                  //建群时间
+	MemberList      []GroupMemberAccount // 初始群成员列表，最多500个（选填）
 
 }
 type CreateGroupResp struct {
 	CommonResp
-	GroupId string
+	GroupID string
 }
 
 // CreateGroup 创建群
@@ -59,8 +61,19 @@ func (api *TimApp) CreateGroup(groupDefine GroupDefine) (*CreateGroupResp, error
 	return resp, err
 }
 
+// DestroyGroup 删除群组
+func (api *TimApp) DestroyGroup(groupID string) (*CommonResp, error) {
+	req := map[string]string{
+		"GroupId": groupID,
+	}
+	resp := new(CommonResp)
+	err := api.do(groupSvc, "destroy_group", req, resp)
+	return resp, err
+
+}
+
 type MemberAccountResult struct {
-	MemberAccount
+	GroupMember
 	Result int // 加群返回值使用
 }
 type AddGroupMemberResp struct {
@@ -77,7 +90,7 @@ type ImportMsgResult struct {
 	MsgTime int64
 }
 type ImportMemberAccount struct {
-	MemberAccount
+	GroupMember
 	JoinTime     string
 	UnreadMsgNum int
 }
@@ -133,5 +146,12 @@ func (api *TimApp) ImportGroupMember(groupID string, memberList []ImportMemberAc
 	}
 	resp := new(AddGroupMemberResp)
 	err := api.do(groupSvc, "import_group_member", reqdata, resp)
+	return resp, err
+}
+
+// ImportGroup 导入群 用于同步群数据
+func (api *TimApp) ImportGroup(groupDefine GroupDefine) (*CreateGroupResp, error) {
+	resp := new(CreateGroupResp)
+	err := api.do(groupSvc, "import_group", groupDefine, resp)
 	return resp, err
 }
