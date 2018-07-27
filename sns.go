@@ -29,7 +29,7 @@ type AddFriendItem struct {
 	AddWording string // 附言 256字节
 }
 type ImportFriendItem struct {
-	To_Account string //
+	ToAccount  string `json:"To_Account"` //
 	AddSource  string // 来源 前缀 AddSource_Type_ 关键字 8字节 英文
 	Remark     string // 备注 96字节
 	RemarkTime int

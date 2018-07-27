@@ -14,7 +14,7 @@ func TestAccountImport(t *testing.T) {
 }
 
 func TestQueryAccountStatus(t *testing.T) {
-	acccount := "goTest"
+	acccount := "10"
 	resp, err := testTimAPP.QueryState([]string{acccount})
 	if err != nil {
 		t.Error(err)
