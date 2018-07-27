@@ -65,6 +65,9 @@ func (api *TimApp) do(service, cmd string, params interface{}, resp interface{})
 		return encodeError
 	}
 
+	if api.Debug {
+		fmt.Println("post data", string(jsonData))
+	}
 	responsBody, err := api.httpReq(service, cmd, jsonData)
 	if err != nil {
 		return err

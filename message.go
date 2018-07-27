@@ -16,70 +16,56 @@ const (
 	TIMFace TimMsgType = "TIMFaceElem"
 	// TIMCustom 自定义消息
 	TIMCustom TimMsgType = "TIMCustomElem"
-	// TIMSound 音频消息
-	TIMSound TimMsgType = "TIMSoundElem"
-	// TIMImage 图片消息
-	TIMImage TimMsgType = "TIMImageElem"
-	// TIMFile 文件消息
-	TIMFile TimMsgType = "TIMFileElem"
 
 	maxOfflineLife int = 604800
 
-	SyncToFrom    SyncType = 1
+	// SyncToFrom 同步到发送方
+	SyncToFrom SyncType = 1
+	// NotSyncToFrom 不同步到发送方
 	NotSyncToFrom SyncType = 2
 )
 
-type TimMessage struct {
-	From_Account string
-	SendTime     int
-	Random       int
-	MsgBody      []TimMsgElement
+// Message 消息结构体
+type Message struct {
+	FromAccount string `json:"From_Account"`
+	SendTime    int
+	Random      int
+	MsgBody     []MsgElement
 }
-type TimMsgElement struct {
+
+// MsgElement 消息体中`MsgBody`中的值的结构体
+type MsgElement struct {
 	MsgType    TimMsgType
-	MsgContent interface{}
+	MsgContent interface{} // 具体类型的消息结构体数据
 }
-type TimMsgText struct {
+
+// MsgText 文本消息 结构体
+type MsgText struct {
 	Text string
 }
-type TimMsgLocation struct {
+
+// MsgLocation 位置消息结构体
+type MsgLocation struct {
 	Desc      string
 	Latitude  float64
 	Longitude float64
 }
-type TimMsgFace struct {
+
+// MsgFace 表情消息结构体
+type MsgFace struct {
 	Index int
 	Data  string
 }
-type TimMsgCustom struct {
-	Data  string
+
+// MsgCustom 自定义消息结构体
+type MsgCustom struct {
+	Data  interface{}
 	Desc  string
 	Ext   string
 	Sound string
 }
-type TimMsgSound struct {
-	UUID   string
-	Size   int
-	Second int
-}
-type TimMsgImage struct {
-	UUID           string
-	ImageFormat    int
-	ImageInfoArray []TimMsgImageInfo
-}
-type TimMsgImageInfo struct {
-	Type   int
-	Size   int
-	Width  int
-	Height int
-	URL    string
-}
-type TimMsgFile struct {
-	UUID     string
-	FileSize int
-	FileName string
-}
 
+// SendMsgData 发消息接口参数结构体
 type SendMsgData struct {
 	SyncOtherMachine SyncType
 	FromAccount      string `json:"From_Account"`
@@ -88,8 +74,10 @@ type SendMsgData struct {
 	MsgLifeTime  int
 	MsgRandom    int
 	MsgTimeStamp int64
-	MsgBody      []TimMsgElement
+	MsgBody      []MsgElement
 }
+
+// SendMsgResp 发消息接口返回数据结构体
 type SendMsgResp struct {
 	CommonResp
 	MsgTime int
@@ -98,6 +86,12 @@ type SendMsgResp struct {
 // SendMsg 发送单聊消息 100次/秒
 func (api *TimApp) SendMsg(sendMsgData SendMsgData) (*SendMsgResp, error) {
 	resp := new(SendMsgResp)
+	if sendMsgData.MsgLifeTime > maxOfflineLife {
+		sendMsgData.MsgLifeTime = maxOfflineLife
+	}
+	if sendMsgData.MsgTimeStamp <= 0 {
+		sendMsgData.MsgTimeStamp = time.Now().Unix()
+	}
 	err := api.do(openImSvc, "sendmsg", sendMsgData, resp)
 	return resp, err
 }
@@ -110,8 +104,8 @@ func (api *TimApp) ImportMsg(msgData SendMsgData) (*CommonResp, error) {
 }
 
 type ErrorAccount struct {
-	To_Account string
-	ErrorCode  int
+	ToAccount string `json:"To_Account"`
+	ErrorCode int
 }
 type BatchSendMsgResp struct {
 	CommonResp
@@ -132,15 +126,15 @@ func (api *TimApp) BatchSendTextMsg(fromAccount string, toAccount []string, cont
 		MsgTimeStamp:     time.Now().Unix(),
 		FromAccount:      fromAccount,
 		ToAccount:        toAccount,
-		MsgBody:          []TimMsgElement{},
+		MsgBody:          []MsgElement{},
 		SyncOtherMachine: sync,
 	}
 	reqdata.ToAccount = toAccount
 
-	msgEle := TimMsgElement{}
+	msgEle := MsgElement{}
 	msgEle.MsgType = TIMText
 
-	txtMsg := new(TimMsgText)
+	txtMsg := new(MsgText)
 	txtMsg.Text = content
 
 	msgEle.MsgContent = txtMsg

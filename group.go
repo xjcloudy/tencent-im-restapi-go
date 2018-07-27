@@ -122,7 +122,7 @@ func (api *TimApp) DeleteGroupMember(groupID string, memberToDelAccount []string
 }
 
 // ImportGroupMsg 导入群聊消息
-func (api *TimApp) ImportGroupMsg(groupID string, msgList []TimMessage) (*ImportGroupMsgResp, error) {
+func (api *TimApp) ImportGroupMsg(groupID string, msgList []Message) (*ImportGroupMsgResp, error) {
 	if len(msgList) > 20 {
 		return nil, errors.New("导入群聊消息条数不能超过20条")
 	}
