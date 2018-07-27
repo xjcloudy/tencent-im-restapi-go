@@ -13,6 +13,7 @@ func init() {
 	testTimAPP.AppID = "yourAppId"
 	testTimAPP.Identifiner = "yourIdentifiner"
 	testTimAPP.Sig = "yourUserSig"
+	testTimAPP.Debug = true
 }
 
 func TestGetSig(t *testing.T) {
@@ -26,16 +27,5 @@ func GetResp(v interface{}) {
 	 }`
 	if err := json.Unmarshal([]byte(jsonStr), v); err != nil {
 		fmt.Println(err)
-	}
-}
-
-func TestApi(t *testing.T) {
-	toaccount := []string{}
-	toaccount = append(toaccount, "a1")
-	toaccount = append(toaccount, "a2")
-	if resp, err := testTimAPP.BatchSendTextMsg("admin", toaccount, "hello", SyncToFrom); err != nil {
-		fmt.Println(err)
-	} else {
-		fmt.Println(resp.ErrorCode)
 	}
 }
