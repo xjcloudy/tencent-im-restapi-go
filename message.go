@@ -6,6 +6,7 @@ import (
 
 type TimMsgType string
 type SyncType int
+type CountType int
 
 const (
 	// TIMText 文本消息
@@ -23,6 +24,12 @@ const (
 	SyncToFrom SyncType = 1
 	// NotSyncToFrom 不同步到发送方
 	NotSyncToFrom SyncType = 2
+
+	// SyncAndCount 实时消息导入 计入未读
+	SyncAndCount CountType = 1
+
+	// SyncNotCount 历史消息导入 不计入未读
+	SyncNotCount CountType = 2
 )
 
 // Message 消息结构体
@@ -67,8 +74,9 @@ type MsgCustom struct {
 
 // SendMsgData 发消息接口参数结构体
 type SendMsgData struct {
-	SyncOtherMachine SyncType
-	FromAccount      string `json:"From_Account"`
+	SyncFromOldSystem CountType
+	SyncOtherMachine  SyncType
+	FromAccount       string `json:"From_Account"`
 	// 单发的时候是string,批量发的时候是[]string
 	ToAccount    interface{} `json:"To_Account"`
 	MsgLifeTime  int

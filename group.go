@@ -9,11 +9,17 @@ type ApplyJoinOption string
 
 const (
 	// 群类型
-	TIMGroupPrivate    GroupType = "Private"
-	TIMGroupPublic     GroupType = "Public"
-	TIMGroupChatRoom   GroupType = "ChatRoom"
+
+	// TIMGroupPrivate 私人群
+	TIMGroupPrivate GroupType = "Private"
+	// TIMGroupPublic 公开群
+	TIMGroupPublic GroupType = "Public"
+	// TIMGroupChatRoom 聊天室
+	TIMGroupChatRoom GroupType = "ChatRoom"
+	// TIMGroupAvChatRoom 在线直播群
 	TIMGroupAvChatRoom GroupType = "AVChatRoom"
-	TIMGroupBChatRoom  GroupType = "BChatRoom"
+	// TIMGroupBChatRoom 在线广播大群
+	TIMGroupBChatRoom GroupType = "BChatRoom"
 	// 加群处理方式
 	TIMGroupFreeJoin       ApplyJoinOption = "FreeAccess"
 	TIMGroupNeedPermission ApplyJoinOption = "NeedPermission"

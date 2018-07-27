@@ -2,6 +2,7 @@ package tim
 
 import (
 	"testing"
+	"time"
 )
 
 func TestBatchSendTextMsg(t *testing.T) {
@@ -58,5 +59,28 @@ func TestSendMsg(t *testing.T) {
 	}
 	if resp.ActionStatus == ResponseFail {
 		t.Error(resp.ErrorInfo, resp.ErrorCode)
+	}
+}
+
+func TestImportMsg(t *testing.T) {
+	textMsg := MsgElement{
+		MsgType: TIMText,
+		MsgContent: MsgText{
+			Text: "历史消息",
+		},
+	}
+	param := SendMsgData{
+		SyncFromOldSystem: SyncNotCount,
+		FromAccount:       "goTest",
+		ToAccount:         "10",
+		MsgTimeStamp:      time.Date(2018, 7, 20, 12, 3, 35, 0, time.UTC).Unix(),
+		MsgBody:           []MsgElement{textMsg},
+	}
+	resp, err := testTimAPP.ImportMsg(param)
+	if err != nil {
+		t.Error(err)
+	}
+	if resp.ActionStatus == ResponseFail {
+		t.Error(resp.ErrorInfo)
 	}
 }

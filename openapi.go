@@ -30,10 +30,11 @@ const (
 	snsSvc       = "sns"
 	groupSvc     = "group_open_http_svc"
 	profileSvc   = "profile"
-	version      = "v4"
-	timAPIHost   = "https://console.tim.qq.com"
-	contentType  = "json"
-	apn          = '0'
+
+	version     = "v4"
+	timAPIHost  = "https://console.tim.qq.com"
+	contentType = "json"
+	apn         = '0'
 
 	// ResponseOK 成功
 	ResponseOK = "OK"
