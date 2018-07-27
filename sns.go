@@ -5,24 +5,24 @@ type ForceAddFlag int
 type DeleteType string
 
 const (
-	// 单项
-	ADD_TYPE_SINGLE AddType = "Add_Type_Single"
-	// 双向
-	ADD_TYPE_BOTH AddType = "Add_Type_Both"
+	// TIMAddTypeSingle 单项
+	TIMAddTypeSingle AddType = "Add_Type_Single"
+	// TIMAddTypeBoth 双向
+	TIMAddTypeBoth AddType = "Add_Type_Both"
 
-	// 强制添加
-	FORCE_ADD ForceAddFlag = 1
-	// 常规添加
-	NORMAL_ADD ForceAddFlag = 0
+	// TIMForceAdd 强制添加
+	TIMForceAdd ForceAddFlag = 1
+	// TIMNormalAdd 常规添加
+	TIMNormalAdd ForceAddFlag = 0
 
-	//单项删好友
-	DELETE_TYPE_SINGLE DeleteType = "Delete_Type_Single"
-	// 双向删好友
-	DELETE_TYPE_BOTH DeleteType = "Delete_Type_Both"
+	// TIMDeleteTypeSingle 单项删好友
+	TIMDeleteTypeSingle DeleteType = "Delete_Type_Single"
+	// TIMDeleteTypeBoth 双向删好友
+	TIMDeleteTypeBoth DeleteType = "Delete_Type_Both"
 )
 
 type AddFriendItem struct {
-	To_Account string //
+	ToAccount  string `json:"To_Account"` //
 	AddSource  string // 来源 前缀 AddSource_Type_ 关键字 8字节 英文
 	Remark     string // 备注 96字节
 	GroupName  string // 分组
@@ -50,48 +50,48 @@ type FriendAddResp struct {
 	Invalid_Account []string
 }
 
-// 添加好友
-func (api *TimApp) FriendAdd(from_account string, addFriendItems []AddFriendItem, addType AddType, forceAddFlags ForceAddFlag) (error, *FriendAddResp) {
-	req_data := map[string]interface{}{
-		"From_Account":  from_account,
+// FriendAdd 添加好友
+func (api *TimApp) FriendAdd(fromAccount string, addFriendItems []AddFriendItem, addType AddType, forceAddFlags ForceAddFlag) (*FriendAddResp, error) {
+	reqdata := map[string]interface{}{
+		"From_Account":  fromAccount,
 		"AddFriendItem": addFriendItems,
 		"AddType":       addType,
 		"ForceAddFlags": forceAddFlags,
 	}
 	resp := new(FriendAddResp)
-	err := api.do(snsSvc, "friend_add", req_data, resp)
-	return err, resp
+	err := api.do(snsSvc, "friend_add", reqdata, resp)
+	return resp, err
 }
 
-// 导入好友
-func (api *TimApp) FriendImport(from_account string, importFriendItems []ImportFriendItem) (error, *FriendAddResp) {
-	req_data := map[string]interface{}{
-		"From_Account":  from_account,
+// FriendImport 导入好友
+func (api *TimApp) FriendImport(fromAccount string, importFriendItems []ImportFriendItem) (*FriendAddResp, error) {
+	reqdata := map[string]interface{}{
+		"From_Account":  fromAccount,
 		"AddFriendItem": importFriendItems,
 	}
 	resp := new(FriendAddResp)
-	err := api.do(snsSvc, "friend_import", req_data, resp)
-	return err, resp
+	err := api.do(snsSvc, "friend_import", reqdata, resp)
+	return resp, err
 }
 
-// 删除好友
-func (api *TimApp) FriendDelete(from_account string, to_account []string, deleteType DeleteType) (error, *FriendAddResp) {
-	req_data := map[string]interface{}{
-		"From_Account": from_account,
-		"To_Account":   to_account,
+// FriendDelete 删除好友
+func (api *TimApp) FriendDelete(fromAccount string, toAccount []string, deleteType DeleteType) (*FriendAddResp, error) {
+	reqdata := map[string]interface{}{
+		"From_Account": fromAccount,
+		"To_Account":   toAccount,
 		"DeleteType":   deleteType,
 	}
 	resp := new(FriendAddResp)
-	err := api.do(snsSvc, "friend_delete", req_data, resp)
-	return err, resp
+	err := api.do(snsSvc, "friend_delete", reqdata, resp)
+	return resp, err
 }
 
-// 清空好友
-func (api *TimApp) FriendDeleteAll(from_account string) (error, *CommonResp) {
-	req_data := map[string]string{
-		"From_Account": from_account,
+// FriendDeleteAll 清空好友
+func (api *TimApp) FriendDeleteAll(fromAccount string) (*CommonResp, error) {
+	reqdata := map[string]string{
+		"From_Account": fromAccount,
 	}
 	resp := new(CommonResp)
-	err := api.do(snsSvc, "friend_delete_all", req_data, resp)
-	return err, resp
+	err := api.do(snsSvc, "friend_delete_all", reqdata, resp)
+	return resp, err
 }
