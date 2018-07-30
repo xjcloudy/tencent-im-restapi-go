@@ -3,10 +3,14 @@ package tim
 import (
 	"encoding/json"
 	"fmt"
+	"math/rand"
 	"testing"
+	"time"
 )
 
 var testTimAPP *TimApp
+
+var utc8 *time.Location
 
 func init() {
 	testTimAPP = new(TimApp)
@@ -14,6 +18,11 @@ func init() {
 	testTimAPP.Identifiner = "yourIdentifiner"
 	testTimAPP.Sig = "yourUserSig"
 	testTimAPP.Debug = true
+
+	utc8, _ = time.LoadLocation("Asia/Shanghai")
+
+	rand.Seed(time.Now().Unix())
+
 }
 
 func TestGetSig(t *testing.T) {

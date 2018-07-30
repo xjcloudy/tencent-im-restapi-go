@@ -32,27 +32,27 @@ type KV struct {
 }
 type GroupMember struct {
 	MemberAccount string `json:"Member_Account"` // 成员（必填）
-	Role          string // 赋予该成员的身份，目前备选项只有Admin（选填）
+	Role          string `json:",omitempty"`     // 赋予该成员的身份，目前备选项只有Admin（选填）
 }
 type GroupMemberAccount struct {
 	GroupMember
-	AppMemberDefinedData []KV //群成员维度自定义字段（选填）
+	AppMemberDefinedData []KV `json:",omitempty"` //群成员维度自定义字段（选填）
 }
 
 // GroupDefine 群信息
 type GroupDefine struct {
-	OwnerAccount    string               `json:"Owner_Account"` // 群主的UserId（选填）
+	OwnerAccount    string               `json:"Owner_Account,omitempty"` // 群主的UserId（选填）
 	Type            GroupType            // 群组类型：Private/Public/ChatRoom(不支持AVChatRoom和BChatRoom)（必填）
 	GroupID         string               `json:"GroupId"` //用户自定义群组ID（选填）
 	Name            string               // 群名称（必填）
-	Introduction    string               // 群简介（选填）
-	Notification    string               // 群公告（选填）
-	FaceURL         string               `json:"FaceUrl"` // 群头像URL（选填）
-	MaxMemberCount  int                  // 最大群成员数量（选填）
-	ApplyJoinOption ApplyJoinOption      // 申请加群处理方式（选填）
-	AppDefinedData  []KV                 // 群组维度的自定义字段（选填）
-	CreateTime      int                  //建群时间
-	MemberList      []GroupMemberAccount // 初始群成员列表，最多500个（选填）
+	Introduction    string               `json:",omitempty"`        // 群简介（选填）
+	Notification    string               `json:",omitempty"`        // 群公告（选填）
+	FaceURL         string               `json:"FaceUrl,omitempty"` // 群头像URL（选填）
+	MaxMemberCount  int                  `json:",omitempty"`        // 最大群成员数量（选填）
+	ApplyJoinOption ApplyJoinOption      `json:",omitempty"`        // 申请加群处理方式（选填）
+	AppDefinedData  []KV                 `json:",omitempty"`        // 群组维度的自定义字段（选填）
+	CreateTime      int64                `json:",omitempty"`        //建群时间
+	MemberList      []GroupMemberAccount `json:",omitempty"`        // 初始群成员列表，最多500个（选填）
 
 }
 type CreateGroupResp struct {
@@ -97,7 +97,7 @@ type ImportMsgResult struct {
 }
 type ImportMemberAccount struct {
 	GroupMember
-	JoinTime     string
+	JoinTime     int64
 	UnreadMsgNum int
 }
 
@@ -125,6 +125,17 @@ func (api *TimApp) DeleteGroupMember(groupID string, memberToDelAccount []string
 	err := api.do(groupSvc, "delete_group_member", reqdata, resp)
 	return resp, err
 
+}
+
+// GroupMessage 消息结构体
+type GroupMessage struct {
+	GroupID               string   `json:"GroupId"`
+	FromAccount           string   `json:"From_Account,omitempty"`
+	MsgPriority           string   `json:",omitempty"` // 消息优先级
+	ForbidCallbackControl []string `json:",omitempty"` // 消息回调禁止开关，只对单条消息有效，ForbidBeforeSendMsgCallback 表示禁止发消息前回调，ForbidAfterSendMsgCallback 表示禁止发消息后回调。
+	OnlineOnlyFlag        int      `json:",omitempty"` // 1: 表示只在线下发(只有在线群成员才能收到)，不存离线及漫游
+	Random                int32    `json:",omitempty"`
+	MsgBody               []MsgElement
 }
 
 // ImportGroupMsg 导入群聊消息
@@ -159,5 +170,18 @@ func (api *TimApp) ImportGroupMember(groupID string, memberList []ImportMemberAc
 func (api *TimApp) ImportGroup(groupDefine GroupDefine) (*CreateGroupResp, error) {
 	resp := new(CreateGroupResp)
 	err := api.do(groupSvc, "import_group", groupDefine, resp)
+	return resp, err
+}
+
+// SendGroupMsgResp 发送群消息的返回值结构体
+type SendGroupMsgResp struct {
+	SendMsgResp
+	MsgSeq int
+}
+
+// SendGroupMsg 在群里发消息
+func (api *TimApp) SendGroupMsg(groupMsg GroupMessage) (*SendGroupMsgResp, error) {
+	resp := new(SendGroupMsgResp)
+	err := api.do(groupSvc, "send_group_msg", groupMsg, resp)
 	return resp, err
 }

@@ -35,8 +35,8 @@ const (
 // Message 消息结构体
 type Message struct {
 	FromAccount string `json:"From_Account"`
-	SendTime    int
-	Random      int
+	SendTime    int64
+	Random      int32
 	MsgBody     []MsgElement
 }
 
