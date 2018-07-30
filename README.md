@@ -3,7 +3,7 @@
 
 # USAGE
 
-```
+```golang
     // 初始化配置
     api = new(TimApp)
     api.AppID ="yourAppid"
