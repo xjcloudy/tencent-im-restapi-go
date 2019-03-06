@@ -1,6 +1,6 @@
 package callback
 
-import tim "github.com/xjcloudy/tencent-im-restapi-go-sdk"
+import tim "github.com/xjcloudy/tencent-im-restapi-go"
 
 type GroupCallbackBase struct {
 	CallbackCommand string
