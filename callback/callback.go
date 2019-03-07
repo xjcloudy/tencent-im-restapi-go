@@ -1,8 +1,8 @@
 package callback
 
-import (
-	"github.com/xjcloudy/tencent-im-restapi-go"
-)
+import tim "github.com/xjcloudy/tencent-im-restapi-go"
+
+
 
 type CallbackResp struct {
 	ActionStatus string
@@ -18,8 +18,8 @@ func CallbackSuccess() CallbackResp {
 	}
 }
 func CallbackFail(errorcode int, errorinfo string) CallbackResp {
-	if errorcode == 0{
-		errorcode =1
+	if errorcode == 0 {
+		errorcode = 1
 	}
 	return CallbackResp{
 		ActionStatus: tim.ResponseFail,
