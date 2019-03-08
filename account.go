@@ -39,7 +39,7 @@ func (api *TimApp) MultiaccountImport(accounts []string) (*MultiAccountImportRes
 	}
 	reqdata := map[string][]string{"Accounts": accounts}
 	resp := new(MultiAccountImportResp)
-	err := api.do(openLoginSvc, "multicaccount_import", reqdata, resp)
+	err := api.do(openLoginSvc, "multiaccount_import", reqdata, resp)
 	return resp, err
 }
 
