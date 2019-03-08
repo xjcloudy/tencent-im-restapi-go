@@ -36,3 +36,19 @@ type GroupCallbackBeforeSendMsg struct {
 	Random          int32            // 随机数
 	MsgBody         []tim.MsgElement // 消息体
 }
+type GroupBeforeCreateGroup struct {
+	OperatorAccount string                   `json:"Operator_Account"` // 操作者
+	OwnerAccount    string                   `json:"Owner_Account"`    // 群主
+	Name            string                   // 群组名称
+	CreatedNum      int32                    //该用户已创建的同类的群组个数
+	MemberList      []tim.GroupMemberAccount // 初始成员列表
+
+}
+type GroupAfterCreateGroup struct {
+	GroupCallbackBase
+	OperatorAccount     string                   `json:"Operator_Account"` // 操作者
+	OwnerAccount        string                   `json:"Owner_Account"`    // 群主
+	Name                string                   // 群组名称
+	MemberList          []tim.GroupMemberAccount // 初始成员列表
+	UserDefinedDataList []tim.KV                 //用户建群时的自定义字段
+}
