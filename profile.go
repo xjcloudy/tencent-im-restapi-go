@@ -12,7 +12,7 @@ type UserProfile struct {
 }
 type ProfileKV struct {
 	Tag   string
-	Value string
+	Value interface{}
 }
 
 // PortraitGet 拉取账号资料
