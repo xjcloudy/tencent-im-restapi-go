@@ -185,3 +185,50 @@ func (api *TimApp) SendGroupMsg(groupMsg GroupMessage) (*SendGroupMsgResp, error
 	err := api.do(groupSvc, "send_group_msg", groupMsg, resp)
 	return resp, err
 }
+
+type GroupMsgHistoryResp struct {
+	ActionStatus string
+	ErrorCode    int
+	GroupId      string
+	IsFinished   int
+	RspMsgList   []GroupMsgHistoryElement
+}
+
+type GroupMsgHistoryElement struct {
+	FromAccount  string `json:"From_Account"`
+	IsPlaceMsg   int
+	MsgRandom    int64
+	MsgSeq       int64
+	MsgTimeStamp int64
+	MsgBody      []MsgElement
+}
+
+type BasicGroupMsgHistoryReq struct {
+	GroupId      string
+	ReqMsgNumber int
+}
+
+type SeqGroupMsgHistoryReq struct {
+	BasicGroupMsgHistoryReq
+	ReqMsgSeq int64
+}
+
+func (api *TimApp) GroupMsgHistory(groupId string, reqMsgNumber int, reqMsgSeq int64) (*GroupMsgHistoryResp, error) {
+
+	basicReq := BasicGroupMsgHistoryReq{GroupId: groupId, ReqMsgNumber: reqMsgNumber}
+	resp := new(GroupMsgHistoryResp)
+
+	if reqMsgSeq > 0 {
+		seqReq := SeqGroupMsgHistoryReq{
+			BasicGroupMsgHistoryReq: basicReq,
+			ReqMsgSeq:               reqMsgSeq,
+		}
+		err := api.do(groupSvc, "group_msg_get_simple", seqReq, resp)
+
+		return resp, err
+	} else {
+		err := api.do(groupSvc, "group_msg_get_simple", basicReq, resp)
+
+		return resp, err
+	}
+}

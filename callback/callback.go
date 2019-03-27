@@ -2,8 +2,6 @@ package callback
 
 import tim "github.com/xjcloudy/tencent-im-restapi-go"
 
-
-
 type CallbackResp struct {
 	ActionStatus string
 	ErrorInfo    string
