@@ -1,6 +1,7 @@
 package tim
 
 import (
+	"fmt"
 	"math/rand"
 	"testing"
 	"time"
@@ -144,4 +145,13 @@ func TestSendGroupMsg(t *testing.T) {
 		t.Error(resp.ErrorInfo)
 	}
 	t.Log(resp.MsgSeq)
+}
+
+func TestGroupMsgHistory(t *testing.T) {
+	groupID := "@TGS#2WHDX7XFQ"
+	reqMsgNumber := 20
+	reqMsgSeq := 0
+	resp, err := testTimAPP.GroupMsgHistory(groupID, reqMsgNumber, int64(reqMsgSeq))
+	fmt.Println(err)
+	fmt.Println(resp)
 }
