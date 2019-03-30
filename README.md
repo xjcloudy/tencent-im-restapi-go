@@ -1,5 +1,6 @@
 # TIM SDK-腾讯“云通讯”服务服务端SDK(go语言) 
 <a href="https://996.icu"><img src="https://img.shields.io/badge/link-996.icu-red.svg"></a>
+
 1.0.0-beta版发布了目前项目中在使用，等项目上线测试通过后。发正式版。
 
 # USAGE
